@@ -1,23 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useTrading } from '@/context/TradingContext';
 import { 
-  TrendingUp, 
   Lock, 
   Mail, 
   User as UserIcon, 
   Eye, 
   EyeOff, 
-  ArrowRight, 
-  ShieldCheck, 
-  Zap, 
-  CheckCircle2,
-  Sparkles
+  ArrowRight
 } from 'lucide-react';
 
 export function AuthView() {
-  const { login, register, loginDemo } = useTrading();
+  const { login, register } = useTrading();
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -55,36 +51,30 @@ export function AuthView() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-100 flex items-center justify-center px-[12px] py-3">
-      {/* Mobile Phone Mockup Frame / Container */}
-      <div className="w-full max-w-[420px] bg-white rounded-3xl shadow-xl border border-neutral-200/80 overflow-hidden flex flex-col min-h-[780px]">
-        
-        {/* Mobile Top Status Bar Simulation */}
-        <div className="bg-neutral-900 text-white text-[11px] px-6 py-2.5 flex items-center justify-between font-mono select-none">
-          <span className="font-semibold tracking-wider">09:41</span>
-          <div className="w-20 h-4 bg-neutral-800 rounded-full mx-auto" />
-          <div className="flex items-center gap-1.5 opacity-90">
-            <span className="text-[10px]">5G</span>
-            <div className="w-4 h-2.5 border border-white rounded-[2px] p-[1px]">
-              <div className="w-full h-full bg-amber-400 rounded-[1px]" />
-            </div>
-          </div>
-        </div>
-
+    <div className="min-h-screen bg-neutral-100 flex items-center justify-center px-[12px] py-4">
+      {/* Mobile Card Container */}
+      <div className="w-full max-w-[420px] bg-white rounded-3xl shadow-xl border border-neutral-200/80 overflow-hidden flex flex-col">
         {/* Content Body */}
         <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between bg-gradient-to-b from-amber-50/40 via-white to-neutral-50/50">
           
           <div>
             {/* Brand Header */}
             <div className="text-center mt-2 mb-6">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-400 text-neutral-950 shadow-md shadow-amber-400/30 mb-3">
-                <TrendingUp className="w-8 h-8 stroke-[2.5]" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-400/20 border border-amber-300/60 p-1.5 shadow-md shadow-amber-400/20 mb-3 overflow-hidden">
+                <Image
+                  src="/assets/aistudio/6819650_af089a78.png"
+                  alt="G-squad Logo"
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-contain"
+                  priority
+                />
               </div>
               <h1 className="text-2xl font-black tracking-tight text-neutral-900 flex items-center justify-center gap-1.5">
-                Aura<span className="text-amber-500">Trade</span>
+                G-<span className="text-amber-500">squad</span>
               </h1>
               <p className="text-xs text-neutral-500 mt-1 font-medium">
-                Professional Next-Gen Mobile Trading
+                Automated Bot Trading & USDT TRX Platform
               </p>
             </div>
 
@@ -239,49 +229,39 @@ export function AuthView() {
                   </>
                 )}
               </button>
+
+              {!isRegisterMode && (
+                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEmail('admin@gsquad.io');
+                      setPassword('admin123');
+                    }}
+                    className="text-[11px] text-amber-600 hover:text-amber-800 font-semibold cursor-pointer py-1"
+                  >
+                    Fill Admin Credentials
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEmail('demo@gsquad.io');
+                      setPassword('demo123');
+                    }}
+                    className="text-[11px] text-neutral-500 hover:text-neutral-800 font-semibold cursor-pointer py-1"
+                  >
+                    Fill Demo User
+                  </button>
+                </div>
+              )}
+
+              {isRegisterMode && (
+                <p className="text-[11px] text-center text-neutral-500 mt-2 font-medium">
+                  A unique ID <span className="font-mono font-bold text-neutral-800">(e.g. GSQ-73835838)</span> will be generated for your account.
+                </p>
+              )}
             </form>
-
-            {/* Divider */}
-            <div className="relative my-5">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-neutral-200"></div>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2.5 text-neutral-400 text-[10px] font-semibold tracking-wider">
-                  Or instant access
-                </span>
-              </div>
-            </div>
-
-            {/* Quick Demo Button with Yellow Accent Pill */}
-            <button
-              type="button"
-              onClick={loginDemo}
-              className="w-full bg-neutral-100 hover:bg-amber-50 hover:border-amber-300 border border-neutral-200 text-neutral-800 font-semibold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-xs group cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-500 group-hover:rotate-12 transition-transform" />
-              <span>Explore Demo Account ($50,000 Paper Funds)</span>
-            </button>
           </div>
-
-          {/* Bottom Security Highlights */}
-          <div className="pt-4 border-t border-neutral-100 mt-4">
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="flex flex-col items-center">
-                <ShieldCheck className="w-4 h-4 text-neutral-400 mb-0.5" />
-                <span className="text-[10px] text-neutral-500 font-medium">Bank-Grade 256b</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <Zap className="w-4 h-4 text-amber-500 mb-0.5" />
-                <span className="text-[10px] text-neutral-500 font-medium">Instant Fill</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 mb-0.5" />
-                <span className="text-[10px] text-neutral-500 font-medium">Zero Commission</span>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>

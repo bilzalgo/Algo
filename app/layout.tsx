@@ -2,17 +2,17 @@ import type {Metadata, Viewport} from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'AuraTrade - Advanced Mobile Trading Platform',
-  description: 'Experience professional mobile trading with real-time analytics, instant execution, portfolio tracking, and comprehensive market intelligence.',
+  title: 'G-squad - Advanced Mobile Trading Platform',
+  description: 'Experience professional automated mobile trading with real-time analytics, instant execution, portfolio tracking, and comprehensive market intelligence.',
   openGraph: {
-    title: 'AuraTrade - Advanced Mobile Trading Platform',
-    description: 'Experience professional mobile trading with real-time analytics, instant execution, portfolio tracking, and comprehensive market intelligence.',
+    title: 'G-squad - Advanced Mobile Trading Platform',
+    description: 'Experience professional automated mobile trading with real-time analytics, instant execution, portfolio tracking, and comprehensive market intelligence.',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AuraTrade - Advanced Mobile Trading Platform',
-    description: 'Experience professional mobile trading with real-time analytics, instant execution, portfolio tracking, and comprehensive market intelligence.',
+    title: 'G-squad - Advanced Mobile Trading Platform',
+    description: 'Experience professional automated mobile trading with real-time analytics, instant execution, portfolio tracking, and comprehensive market intelligence.',
   },
 };
 

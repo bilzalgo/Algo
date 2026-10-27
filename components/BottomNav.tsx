@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTrading } from '@/context/TradingContext';
-import { Home, Sliders, User, CreditCard } from 'lucide-react';
+import { Home, Sliders, User, ArrowLeftRight } from 'lucide-react';
 
 export function BottomNav() {
   const { activeTab, setActiveTab, openPaymentModal } = useTrading();
@@ -37,18 +37,18 @@ export function BottomNav() {
             <span className="text-[10px] mt-0.5 tracking-tight">Home</span>
           </button>
 
-          {/* Payment Button (Deposit & Withdraw) with Signature Yellow Accent */}
+          {/* Payment Button (Deposit & Withdraw USDT) with Signature Yellow Accent */}
           <div className="relative -top-2 flex flex-col items-center">
             <button
               type="button"
               onClick={() => openPaymentModal('deposit')}
               className="w-12 h-12 rounded-2xl bg-amber-400 hover:bg-amber-500 active:scale-95 text-neutral-950 flex items-center justify-center shadow-md shadow-amber-400/40 border-2 border-white transition-all cursor-pointer group"
-              title="Deposit & Withdraw Payment"
+              title="Deposit & Withdraw USDT (TRX)"
             >
-              <CreditCard className="w-5 h-5 stroke-[2.5] group-hover:scale-105 transition-transform" />
+              <ArrowLeftRight className="w-5 h-5 stroke-[2.5] group-hover:scale-105 transition-transform" />
             </button>
             <span className="text-[9px] font-bold text-neutral-800 tracking-tight mt-0.5">
-              Payment
+              USDT TRX
             </span>
           </div>
 

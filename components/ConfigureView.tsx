@@ -9,17 +9,32 @@ import {
   AlertTriangle, 
   Save, 
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Lock,
+  Activity,
+  Building2,
+  Users
 } from 'lucide-react';
 
 export function ConfigureView() {
-  const { riskSettings, updateRiskSettings } = useTrading();
+  const { 
+    riskSettings, 
+    updateRiskSettings,
+    userProfitReturnRate,
+    masterDerivAccount,
+    totalPoolStake,
+    activePoolParticipants,
+    adminSelectedSymbol,
+    availableBotSymbols
+  } = useTrading();
 
   const [stake, setStake] = useState<string>(riskSettings.stake.toString());
   const [profitTarget, setProfitTarget] = useState<string>(riskSettings.profitTarget.toString());
   const [lossTarget, setLossTarget] = useState<string>(riskSettings.lossTarget.toString());
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const activeSymbolObj = availableBotSymbols.find((s) => s.id === adminSelectedSymbol) || availableBotSymbols[0];
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,11 +80,60 @@ export function ConfigureView() {
               Risk Management
             </h1>
             <p className="text-xs text-neutral-500 font-medium">
-              Configure automated bot trading parameters
+              Configure personal stake and automated limits
             </p>
           </div>
         </div>
       </div>
+
+      {/* Institutional Master Deriv Copy-Pool Status Card */}
+      <div className="bg-neutral-950 text-white rounded-3xl p-4 sm:p-5 shadow-md border border-neutral-800 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center">
+              <Building2 className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block leading-none">
+                Execution Gateway
+              </span>
+              <span className="text-xs font-black text-white mt-0.5 block">
+                Admin Master Deriv PAMM Pool
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>CONNECTED</span>
+          </div>
+        </div>
+
+        {/* Master Account Specs Grid */}
+        <div className="grid grid-cols-2 gap-2 p-2.5 rounded-2xl bg-neutral-900/90 border border-neutral-800 text-[11px] mb-3">
+          <div>
+            <span className="text-[10px] text-neutral-400 block">Master Deriv Account</span>
+            <span className="font-mono font-bold text-white">{masterDerivAccount.accountId}</span>
+          </div>
+          <div>
+            <span className="text-[10px] text-neutral-400 block">Admin Profit Return</span>
+            <span className="font-bold text-emerald-400">+{userProfitReturnRate}% on Win</span>
+          </div>
+          <div>
+            <span className="text-[10px] text-neutral-400 block">Trading Asset</span>
+            <span className="font-mono font-bold text-amber-300">{activeSymbolObj.symbol}</span>
+          </div>
+          <div>
+            <span className="text-[10px] text-neutral-400 block">Active Pool Bots</span>
+            <span className="font-bold text-neutral-200">{activePoolParticipants.length} Traders (${totalPoolStake.toLocaleString()})</span>
+          </div>
+        </div>
+
+        <p className="text-[11px] text-neutral-300 leading-snug">
+          You do not need a personal Deriv account. When your bot is started, your stake automatically pools into the Admin Deriv trade. On WIN, you receive <strong>+{userProfitReturnRate}%</strong> profit; on LOSS, your stake is deducted.
+        </p>
+      </div>
+
 
       {/* Risk Management Setup Form */}
       <div className="bg-white rounded-3xl p-5 shadow-sm border border-neutral-200/90">

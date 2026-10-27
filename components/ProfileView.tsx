@@ -3,62 +3,32 @@
 import React, { useState } from 'react';
 import { useTrading } from '@/context/TradingContext';
 import { 
-  User as UserIcon, 
   ShieldCheck, 
   Award, 
   LogOut, 
-  TrendingUp, 
-  TrendingDown, 
-  Clock, 
   ArrowUpRight, 
   ArrowDownLeft, 
-  Plus, 
-  Download, 
-  CreditCard,
-  Mail
+  Mail,
+  Wallet,
+  Zap,
+  CheckCircle2,
+  Copy
 } from 'lucide-react';
 
 export function ProfileView() {
   const { 
     user, 
     logout, 
-    orders, 
     totalPnl, 
     totalPnlPercent, 
     openPaymentModal,
-    setToastMessage 
+    setToastMessage,
+    setIsAdminMode
   } = useTrading();
 
-  const [orderFilter, setOrderFilter] = useState<'all' | 'buy' | 'sell'>('all');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  const filteredOrders = orders.filter((order) => {
-    if (orderFilter === 'all') return true;
-    return order.side === orderFilter;
-  });
-
-  const totalVolume = orders.reduce((sum, o) => sum + o.total, 0);
-  const winRate = orders.length > 0 ? 67.5 : 0;
-
-  const handleExport = () => {
-    if (orders.length === 0) {
-      setToastMessage('No trades to export yet.');
-      return;
-    }
-    const headers = 'Order ID,Symbol,Side,Type,Amount,Price,Total USD,Status,Date\n';
-    const rows = orders.map((o) => 
-      `${o.id},${o.symbol},${o.side},${o.type},${o.amount},${o.price},${o.total},${o.status},${new Date(o.timestamp).toISOString()}`
-    ).join('\n');
-    
-    const blob = new Blob([headers + rows], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `AuraTrade_Statement_${user?.username || 'Trader'}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setToastMessage('Trading statement exported to CSV!');
-  };
+  const winRate = 68.4;
 
   return (
     <div className="space-y-4 pb-24">
@@ -91,45 +61,56 @@ export function ProfileView() {
               <span>{user?.email}</span>
             </div>
 
-            <div className="flex items-center gap-2 mt-1.5">
+            <div className="flex flex-wrap items-center gap-2 mt-1.5">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
                 <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                KYC Level 2 Verified
+                KYC Level 2
               </span>
-              <span className="text-[10px] text-neutral-400">
-                Tier: {user?.tier || 'Pro'}
+              <span className="text-[10px] text-neutral-400 font-semibold">
+                Tier: {user?.tier || 'VIP Pro'}
               </span>
+            </div>
+
+            {/* Generated Account ID */}
+            <div className="mt-2.5 flex items-center gap-1.5">
+              <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">Account ID:</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const idToCopy = user?.accountId || 'GSQ-73835838';
+                  if (navigator?.clipboard?.writeText) {
+                    navigator.clipboard.writeText(idToCopy);
+                    setToastMessage(`Account ID ${idToCopy} copied!`);
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-neutral-100 hover:bg-amber-100 border border-neutral-200 text-neutral-900 text-xs font-mono font-bold transition-colors cursor-pointer group"
+                title="Click to copy Account ID"
+              >
+                <span>{user?.accountId || 'GSQ-73835838'}</span>
+                <Copy className="w-3 h-3 text-neutral-400 group-hover:text-amber-700" />
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Action Pills */}
-        <div className="grid grid-cols-3 gap-2 pt-3 border-t border-neutral-100">
+        {/* Action Buttons: Clean Deposit & Withdraw (USDT TRC-20) */}
+        <div className="grid grid-cols-2 gap-2.5 pt-3 border-t border-neutral-100">
           <button
             type="button"
             onClick={() => openPaymentModal('deposit')}
-            className="py-2 px-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-bold text-xs shadow-xs shadow-amber-400/20 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer"
+            className="py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-bold text-xs shadow-xs shadow-amber-400/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            <ArrowDownLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>Deposit</span>
+            <ArrowDownLeft className="w-4 h-4 stroke-[2.5]" />
+            <span>Deposit USDT</span>
           </button>
 
           <button
             type="button"
             onClick={() => openPaymentModal('withdraw')}
-            className="py-2 px-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer"
+            className="py-2.5 px-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            <ArrowUpRight className="w-3.5 h-3.5 text-amber-400" />
-            <span>Withdraw</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleExport}
-            className="py-2 px-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-xs border border-neutral-200 active:scale-95 transition-all flex items-center justify-center gap-1 cursor-pointer"
-          >
-            <Download className="w-3.5 h-3.5 text-neutral-600" />
-            <span>Export</span>
+            <ArrowUpRight className="w-4 h-4 text-amber-400 stroke-[2.5]" />
+            <span>Withdraw USDT</span>
           </button>
         </div>
       </div>
@@ -140,17 +121,33 @@ export function ProfileView() {
           <div className="flex items-center gap-1.5">
             <Award className="w-4 h-4 text-amber-500" />
             <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
-              Trading Performance
+              Account Overview
             </h2>
           </div>
           <span className="text-[10px] font-semibold text-neutral-400">
-            All-Time Summary
+            Realtime Analytics
           </span>
         </div>
 
         <div className="grid grid-cols-2 gap-2.5">
           <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200/70">
-            <div className="text-[11px] font-semibold text-neutral-500">Net Return</div>
+            <div className="text-[11px] font-semibold text-neutral-500 flex items-center gap-1">
+              <Wallet className="w-3 h-3 text-amber-500" />
+              <span>Available Cash</span>
+            </div>
+            <div className="text-base font-black text-neutral-900 mt-0.5">
+              ${(user?.cashBalance ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </div>
+            <div className="text-[10px] font-semibold text-emerald-600">
+              USDT Equivalent
+            </div>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200/70">
+            <div className="text-[11px] font-semibold text-neutral-500 flex items-center gap-1">
+              <Zap className="w-3 h-3 text-amber-500" />
+              <span>Net Return</span>
+            </div>
             <div className={`text-base font-black mt-0.5 ${totalPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
               {totalPnl >= 0 ? '+' : ''}${totalPnl.toLocaleString()}
             </div>
@@ -160,120 +157,61 @@ export function ProfileView() {
           </div>
 
           <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200/70">
-            <div className="text-[11px] font-semibold text-neutral-500">Win Rate</div>
+            <div className="text-[11px] font-semibold text-neutral-500 flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+              <span>Win Rate</span>
+            </div>
             <div className="text-base font-black text-neutral-900 mt-0.5">
               {winRate}%
             </div>
+            <div className="text-[10px] font-semibold text-neutral-400">
+              Institutional Algorithm
+            </div>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200/70">
+            <div className="text-[11px] font-semibold text-neutral-500 flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3 text-emerald-500" />
+              <span>Settlement Network</span>
+            </div>
+            <div className="text-base font-black text-neutral-900 mt-0.5">
+              TRC-20
+            </div>
             <div className="text-[10px] font-semibold text-emerald-600">
-              Institutional Grade
-            </div>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200/70">
-            <div className="text-[11px] font-semibold text-neutral-500">Orders Executed</div>
-            <div className="text-base font-black text-neutral-900 mt-0.5">
-              {orders.length}
-            </div>
-            <div className="text-[10px] font-semibold text-neutral-400">
-              Simulated Fills
-            </div>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200/70">
-            <div className="text-[11px] font-semibold text-neutral-500">Total Volume</div>
-            <div className="text-base font-black text-neutral-900 mt-0.5">
-              ${totalVolume.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-            </div>
-            <div className="text-[10px] font-semibold text-neutral-400">
-              USD Traded
+              Instant TRX Rail
             </div>
           </div>
         </div>
       </div>
 
-      {/* 3. Trade Orders History */}
-      <div className="bg-white rounded-3xl p-4 sm:p-5 shadow-sm border border-neutral-200/90">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-amber-500" />
-            <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
-              Execution Ledger ({filteredOrders.length})
-            </h2>
+      {/* 2.5 Administrator Console Access Card */}
+      <div className="bg-neutral-900 rounded-3xl p-4 sm:p-5 shadow-sm border border-neutral-800 text-white flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-amber-400 text-neutral-950 flex items-center justify-center font-black shrink-0">
+            <ShieldCheck className="w-5 h-5 stroke-[2.5]" />
           </div>
-
-          {/* Filter tabs */}
-          <div className="flex bg-neutral-100 p-0.5 rounded-xl border border-neutral-200/60">
-            {(['all', 'buy', 'sell'] as const).map((filter) => (
-              <button
-                key={filter}
-                type="button"
-                onClick={() => setOrderFilter(filter)}
-                className={`px-2 py-0.5 text-[10px] font-bold rounded-lg capitalize transition-all cursor-pointer ${
-                  orderFilter === filter
-                    ? 'bg-amber-400 text-neutral-950 shadow-xs'
-                    : 'text-neutral-500 hover:text-neutral-900'
-                }`}
-              >
-                {filter}
-              </button>
-            ))}
+          <div>
+            <div className="text-xs font-bold text-white flex items-center gap-1.5">
+              <span>Admin Dashboard</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-amber-400 text-neutral-950">CONSOLE</span>
+            </div>
+            <div className="text-[11px] text-neutral-400">
+              Users, money adjustments, bot symbol &amp; ledger
+            </div>
           </div>
         </div>
 
-        {filteredOrders.length === 0 ? (
-          <div className="text-center py-6 px-4 bg-neutral-50 rounded-2xl border border-dashed border-neutral-200">
-            <p className="text-xs text-neutral-500 font-medium">
-              No orders found in this category.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
-            {filteredOrders.map((ord) => {
-              const isBuy = ord.side === 'buy';
-              return (
-                <div
-                  key={ord.id}
-                  className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200/70 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs ${
-                        isBuy ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
-                      }`}
-                    >
-                      {isBuy ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownLeft className="w-4 h-4" />}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-extrabold text-xs text-neutral-900">{ord.symbol}</span>
-                        <span className={`text-[9px] font-black uppercase px-1 rounded ${
-                          isBuy ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                        }`}>
-                          {ord.side}
-                        </span>
-                      </div>
-                      <div className="text-[10px] text-neutral-400">
-                        {new Date(ord.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {ord.type}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <div className="text-xs font-black text-neutral-900">
-                      ${ord.total.toLocaleString()}
-                    </div>
-                    <div className="text-[10px] text-neutral-500">
-                      {ord.amount} @ ${ord.price.toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+        <button
+          type="button"
+          onClick={() => setIsAdminMode(true)}
+          className="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-bold text-xs shadow-xs active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>Open</span>
+          <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
+        </button>
       </div>
 
-      {/* 4. Logout / Session Security Card */}
+      {/* 3. Logout / Session Security Card */}
       <div className="bg-white rounded-3xl p-4 sm:p-5 shadow-sm border border-neutral-200/90">
         <div className="flex items-center justify-between">
           <div>
@@ -293,7 +231,7 @@ export function ProfileView() {
               <button
                 type="button"
                 onClick={() => setShowLogoutConfirm(false)}
-                className="px-2.5 py-1.5 rounded-xl bg-neutral-100 text-neutral-600 text-xs font-semibold"
+                className="px-2.5 py-1.5 rounded-xl bg-neutral-100 text-neutral-600 text-xs font-semibold cursor-pointer"
               >
                 Cancel
               </button>

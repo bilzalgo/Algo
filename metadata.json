@@ -1,6 +1,6 @@
 {
-  "name": "AuraTrade - Mobile Trading Platform",
-  "description": "Advanced mobile trading platform featuring real-time market tracking, simulated trading execution, portfolio analytics, and customizable settings.",
+  "name": "G-squad - Mobile Trading Platform",
+  "description": "G-squad mobile automated trading platform featuring real-time market tracking, bot execution, portfolio analytics, and USDT TRX transfers.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

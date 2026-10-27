@@ -46,6 +46,7 @@ export interface TradeOrder {
 
 export interface User {
   id: string;
+  accountId: string;
   username: string;
   email: string;
   displayName: string;
@@ -55,6 +56,10 @@ export interface User {
   isVerified: boolean;
   cashBalance: number;
   startingBalance: number;
+  phone?: string;
+  botRunning?: boolean;
+  role?: 'admin' | 'user';
+  totalTrades?: number;
 }
 
 export interface UserSettings {
@@ -101,3 +106,91 @@ export interface BotStats {
   losses: number;
   rate: number;
 }
+
+export interface WalletTransaction {
+  id: string;
+  userId?: string;
+  userName?: string;
+  userAccountId?: string;
+  type: 'deposit' | 'withdraw';
+  amount: number;
+  network: 'USDT (TRC-20)';
+  address: string;
+  txHash: string;
+  status: 'completed' | 'processing' | 'pending' | 'rejected';
+  timestamp: number;
+  note?: string;
+}
+
+export interface DerivTickData {
+  symbol: string;
+  name: string;
+  quote: number;
+  prevQuote: number;
+  bid: number;
+  ask: number;
+  spread: number;
+  change: number;
+  changePercent: number;
+  high: number;
+  low: number;
+  sparkline: number[];
+  isConnected: boolean;
+  lastUpdated: string;
+}
+
+export interface BotSymbolConfig {
+  id: string;
+  symbol: string;
+  name: string;
+  category: 'volatility' | 'crash_boom' | 'step' | 'jump';
+  tickSpeed: string;
+  description: string;
+  basePrice: number;
+}
+
+export interface MasterDerivAccount {
+  accountId: string;
+  token: string;
+  server: string;
+  currency: 'USD';
+  balance: number;
+  isConnected: boolean;
+  lastSync: number;
+}
+
+export interface PoolParticipant {
+  userId: string;
+  userName: string;
+  userAccountId: string;
+  stake: number;
+  balance: number;
+  sharePercent: number;
+}
+
+export interface MasterPoolParticipantResult {
+  userId: string;
+  userName: string;
+  userAccountId: string;
+  stake: number;
+  pnl: number;
+}
+
+export interface MasterPoolTrade {
+  id: string;
+  contractId: string;
+  symbol: string;
+  symbolName: string;
+  side: 'buy' | 'sell';
+  totalStake: number;
+  entryPrice: number;
+  exitPrice: number;
+  outcome: 'win' | 'loss';
+  returnPercent: number;
+  userPayoutTotal: number;
+  participantCount: number;
+  participants: MasterPoolParticipantResult[];
+  timestamp: number;
+  status: 'settled';
+}
+
